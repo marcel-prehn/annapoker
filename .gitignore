@@ -1,0 +1,8 @@
+.idea
+.DS_Store
+docker-compose.yaml
+docker-compose.local.yaml
+nginx.conf
+redis.master.conf
+redis.slave.conf
+.theia
