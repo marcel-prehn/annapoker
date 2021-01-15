@@ -22,19 +22,24 @@ const client = new Client({
 
 const topicCommand = "/topic/go_stomp_command"
 const topicBroadcast = "/topic/go_stomp_broadcast"
-const pokerCards = [1, 2, 3, 5, 8, 13, 20, 40, 100]
+const pokerCards = ["1", "2", "3", "5", "8", "13", "20", "40", "100", "?", "coffee"]
 let userUuid = uuid()
 
 export const PokerPage = () => {
+    const sessionConfig = {
+        loginLayerVisible: true,
+        loginDisabled: true,
+        logoutDisabled: true,
+        revealDisabled: true,
+        resetVotingsDisabled: true,
+        votingDisabled: true,
+        forceReveal: false,
+        removePlayerDisabled: true,
+    }
     const {sessionId} = useParams()
-    const [loginLayerVisible, setLoginLayerVisible] = useState(true)
-    const [loginDisabled, setLoginDisabled] = useState(false)
-    const [logoutDisabled, setLogoutDisabled] = useState(true)
-    const [revealDisabled, setRevealDisabled] = useState(true)
-    const [resetVotingsDisabled, setResetVotingsDisabled] = useState(true)
-    const [votingDisabled, setVotingDisabled] = useState(true)
-    const [forceReveal, setForceReveal] = useState(false)
+    const [message, setMessage] = useState("Hi! Login to Vote")
     const [username, setUsername] = useState("")
+    const [sessionState, setSessionState] = useState(sessionConfig)
     const role = useRef("player")
 
     const [users, dispatchUsers] = useReducer((current: User[], broadcast: GoBroadcast) => {
@@ -69,27 +74,45 @@ export const PokerPage = () => {
 
     const handleBroadcast = (broadcast: GoBroadcast) => {
         if (broadcast.type === "VOTINGS_REVEALED") {
-            setForceReveal(true)
-            setRevealDisabled(true)
-            setVotingDisabled(true)
+            setSessionState({...sessionState, forceReveal: true, revealDisabled: true, votingDisabled: true})
         }
         if (broadcast.type === "UPDATE_USERS") {
-            setVotingDisabled(false)
-            setForceReveal(false)
+            setSessionState({...sessionState, votingDisabled: false, forceReveal: false})
         }
         if (broadcast.type === "VOTINGS_RESET") {
-            role.current === "player" ? setVotingDisabled(false) : setVotingDisabled(true)
-            setForceReveal(false)
-            setRevealDisabled(false)
+            setSessionState({...sessionState, forceReveal: false, revealDisabled: false})
+            role.current === "player"
+                ? setSessionState({...sessionState, votingDisabled: false})
+                : setSessionState({...sessionState, votingDisabled: true})
+        }
+        if (broadcast.type === "PLAYER_REMOVED") {
+            const removedUser: User = broadcast.data
+            if (removedUser.uuid === userUuid) {
+                sessionStorage.clear()
+                setUsername("")
+                setSessionState({
+                    ...sessionState,
+                    loginDisabled: false,
+                    logoutDisabled: true,
+                    revealDisabled: true,
+                    resetVotingsDisabled: true,
+                    votingDisabled: true,
+                    removePlayerDisabled: true
+                })
+            }
         }
         if (broadcast.type === "NO_SESSION_FOUND") {
             sessionStorage.clear()
             setUsername("")
-            setLoginLayerVisible(false)
-            setLoginDisabled(true)
-            setVotingDisabled(true)
-            setResetVotingsDisabled(true)
-            setRevealDisabled(true)
+            setMessage("Session not found!")
+            setSessionState({
+                ...sessionState,
+                loginLayerVisible: false,
+                loginDisabled: true,
+                votingDisabled: true,
+                resetVotingsDisabled: true,
+                revealDisabled: true,
+            })
         }
     }
 
@@ -100,25 +123,32 @@ export const PokerPage = () => {
         const lastRole = sessionStorage.getItem("role")
         if (lastSession === sessionId && lastUsername !== null && lastUserUuid !== null && lastRole !== null) {
             setUsername(lastUsername)
+            setMessage(`Hi ${lastUsername}`)
             userUuid = lastUserUuid
             role.current = lastRole
-            setLoginLayerVisible(false)
-            setRevealDisabled(false)
-            setResetVotingsDisabled(false)
-            setLoginDisabled(true)
-            setLogoutDisabled(false)
-            role.current === "player" ? setVotingDisabled(false) : setVotingDisabled(true)
+            setSessionState({
+                ...sessionState,
+                loginLayerVisible: false,
+                revealDisabled: false,
+                resetVotingsDisabled: false,
+                loginDisabled: true,
+                logoutDisabled: false,
+                removePlayerDisabled: false
+            })
+            role.current === "player"
+                ? setSessionState({...sessionState, votingDisabled: false})
+                : setSessionState({...sessionState, votingDisabled: true})
         }
     }
 
-    const onVote = (value: number) => {
+    const onVote = (value: string) => {
         let updateVoteCmd: GoCommand = {
             cmd: "UPDATE_VOTING",
             user: {uuid: userUuid, username: username, voting: value},
             sessionId: sessionId
         }
         client.publish({destination: topicCommand, body: JSON.stringify(updateVoteCmd)})
-        setVotingDisabled(true)
+        setSessionState({...sessionState, votingDisabled: true})
     }
 
     const onResetVotings = () => {
@@ -141,7 +171,7 @@ export const PokerPage = () => {
 
     const onLogout = () => {
         let logoutCmd: GoCommand = {
-            cmd: "REMOVE_USER",
+            cmd: "REMOVE_PLAYER",
             user: {username: username, uuid: userUuid},
             sessionId: sessionId
         }
@@ -149,85 +179,107 @@ export const PokerPage = () => {
         console.log(">>> sent", logoutCmd.cmd)
         sessionStorage.clear()
         setUsername("")
-
-        setLoginDisabled(false)
-        setLogoutDisabled(true)
-        setRevealDisabled(true)
-        setResetVotingsDisabled(true)
-        setVotingDisabled(true)
+        setMessage("Hi! Login to Vote")
+        setSessionState({
+            ...sessionState,
+            loginDisabled: false,
+            logoutDisabled: true,
+            revealDisabled: true,
+            resetVotingsDisabled: true,
+            votingDisabled: true,
+            removePlayerDisabled: true
+        })
     }
 
     const onJoinToVote = (username: string) => {
         let saveUserCmd: GoCommand = {
             cmd: "SAVE_USER",
-            user: {uuid: userUuid, username: username, voting: 0},
+            user: {uuid: userUuid, username: username, voting: "0"},
             sessionId: sessionId
         }
         client.publish({destination: topicCommand, body: JSON.stringify(saveUserCmd)})
         console.log(">>> sent", saveUserCmd.cmd)
-
         sessionStorage.setItem("sessionId", sessionId)
         sessionStorage.setItem("username", username)
         sessionStorage.setItem("userUuid", userUuid)
         sessionStorage.setItem("role", role.current)
-
         setUsername(username)
-        setLoginLayerVisible(false)
-        setRevealDisabled(false)
-        setResetVotingsDisabled(false)
-        setLoginDisabled(true)
-        setLogoutDisabled(false)
-        setVotingDisabled(false)
+        setMessage(`Hi ${username}`)
+
+        setSessionState({
+            ...sessionState,
+            loginLayerVisible: false,
+            revealDisabled: false,
+            resetVotingsDisabled: false,
+            loginDisabled: true,
+            logoutDisabled: false,
+            votingDisabled: false,
+            removePlayerDisabled: false
+        })
     }
 
     const onJoinToWatch = (username: string) => {
         role.current = "watcher"
-
         sessionStorage.setItem("sessionId", sessionId)
         sessionStorage.setItem("username", username)
         sessionStorage.setItem("userUuid", userUuid)
         sessionStorage.setItem("role", role.current)
-
         setUsername(username)
-        setLoginLayerVisible(false)
-        setVotingDisabled(true)
-        setRevealDisabled(false)
-        setResetVotingsDisabled(false)
-        setForceReveal(true)
-        setLoginDisabled(true)
-        setLogoutDisabled(false)
+        setMessage(`Hi ${username}`)
+        setSessionState({
+            ...sessionState,
+            loginLayerVisible: false,
+            votingDisabled: true,
+            revealDisabled: false,
+            resetVotingsDisabled: false,
+            forceReveal: true,
+            loginDisabled: true,
+            logoutDisabled: false,
+            removePlayerDisabled: false
+        })
+    }
+
+    const onRemovePlayer = (uuid: string) => {
+        let removePlayerCmd: GoCommand = {
+            cmd: "REMOVE_PLAYER",
+            user: {uuid: uuid, username: username},
+            sessionId: sessionId
+        }
+        client.publish({destination: topicCommand, body: JSON.stringify(removePlayerCmd)})
+        setSessionState({...sessionState, votingDisabled: true})
     }
 
     return (
         <Box>
             <NavHeader
-                loginDisabled={loginDisabled}
-                logoutDisabled={logoutDisabled}
-                revealDisabled={revealDisabled}
-                resetVotingsDisabled={resetVotingsDisabled}
+                loginDisabled={sessionState.loginDisabled}
+                revealDisabled={sessionState.revealDisabled}
+                resetVotingsDisabled={sessionState.resetVotingsDisabled}
                 resetUsersDisabled={true}
-                loginHandler={() => setLoginLayerVisible(true)}
+                loginHandler={() => setSessionState({...sessionState, loginLayerVisible: true})}
                 revealHandler={onRevealVotings}
                 logoutHandler={onLogout}
                 resetVotingsHandler={onResetVotings}
             />
-            {loginLayerVisible ? <LoginLayer
+            {sessionState.loginLayerVisible ? <LoginLayer
                 onVoteHandler={onJoinToVote}
                 onWatchHandler={onJoinToWatch}
-                onEscHandler={() => setLoginLayerVisible(false)}
-                onOutsideClickHandler={() => setLoginLayerVisible(false)}
+                onEscHandler={() => setSessionState({...sessionState, loginLayerVisible: false})}
+                onOutsideClickHandler={() => setSessionState({...sessionState, loginLayerVisible: false})}
             /> : ""}
             <Box align={"center"} pad={"small"}>
-                <Heading>{`Hi ${username}!`}</Heading>
+                <Heading>{message}</Heading>
                 <Box align={"center"} direction={"row"}>
                     {pokerCards.map(c => <PokerCard key={c} onClickHandler={() => onVote(c)} value={c}
-                                                    disabled={votingDisabled}/>)}
+                                                    disabled={sessionState.votingDisabled}/>)}
                 </Box>
             </Box>
             <Box align={"center"} pad={"small"}>
                 <Heading>Users</Heading>
                 <Box align={"center"} direction={"row"}>
-                    <ResultList userUuid={userUuid} data={users} reveal={forceReveal}/>
+                    <ResultList userUuid={userUuid} data={users} reveal={sessionState.forceReveal}
+                                removePlayerDisabled={sessionState.removePlayerDisabled}
+                                onRemovePlayer={onRemovePlayer}/>
                 </Box>
             </Box>
         </Box>

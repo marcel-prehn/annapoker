@@ -17,7 +17,7 @@ type Broadcast struct {
 type User struct {
 	Uuid     string `json:"uuid"`
 	Username string `json:"username"`
-	Voting   int    `json:"voting"`
+	Voting   string `json:"voting"`
 }
 
 type Session struct {

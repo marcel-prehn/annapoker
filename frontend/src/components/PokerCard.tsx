@@ -2,7 +2,7 @@ import React from "react";
 
 interface PokerCardProps {
   onClickHandler: () => void,
-  value: number,
+  value: string,
   disabled: boolean,
 }
 

@@ -125,8 +125,8 @@ func (s *redisService) ResetVotings(sessionId string) error {
 	if err != nil {
 		return err
 	}
-	for index, _ := range session.Users {
-		session.Users[index].Voting = 0
+	for index := range session.Users {
+		session.Users[index].Voting = "0"
 	}
 	payload, err := json.Marshal(session)
 	if err != nil {
@@ -141,8 +141,8 @@ func (s *redisService) CountVotings(sessionId string) (int, error) {
 	if err != nil {
 		return -1, err
 	}
-	for index, _ := range session.Users {
-		if session.Users[index].Voting == 0 {
+	for index := range session.Users {
+		if session.Users[index].Voting == "0" {
 			counter++
 		}
 	}

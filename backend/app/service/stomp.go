@@ -88,8 +88,9 @@ func (s *stompService) ReceiveCommands() {
 		case "RESET_VOTINGS":
 			s.ResetVotings(command.SessionId)
 			s.PublishVotingsReset(command.SessionId)
-		case "REMOVE_USER":
+		case "REMOVE_PLAYER":
 			s.RemoveUser(command)
+			s.SendBroadcast("PLAYER_REMOVED", command.SessionId, command.User)
 			s.PublishUsers(command.SessionId)
 		case "REVEAL_VOTINGS":
 			s.RevealVotings(command.SessionId)

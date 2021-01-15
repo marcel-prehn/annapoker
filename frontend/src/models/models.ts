@@ -6,12 +6,12 @@ export interface GoCommand {
 
 export interface GoBroadcast {
   type: string,
-  data: User[],
+  data: any,
   timestamp?: string
 }
 
 export interface User {
   uuid: string,
   username: string,
-  voting?: number,
+  voting?: string,
 }
