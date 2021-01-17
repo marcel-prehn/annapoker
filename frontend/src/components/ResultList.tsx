@@ -16,11 +16,11 @@ export const ResultList = (props: ResultListProps) => {
     if (data !== null && data !== undefined) {
         const list = data.map((user: User) => (
                 <TableRow key={user.uuid}>
-                    <TableCell size={"xxsmall"}>
-                        {user.uuid !== userUuid ?
-                            <Button icon={<FormClose/>} onClick={() => onRemovePlayer(user.uuid)} disabled={removePlayerDisabled}/>
-                            : ""}
-                    </TableCell>
+                    {/*<TableCell size={"xxsmall"}>*/}
+                    {/*    {user.uuid !== userUuid ?*/}
+                    {/*        <Button icon={<FormClose/>} onClick={() => onRemovePlayer(user.uuid)} disabled={removePlayerDisabled}/>*/}
+                    {/*        : ""}*/}
+                    {/*</TableCell>*/}
                     <TableCell size={"medium"}>
                         <Text size={"xlarge"} margin={"large"}>{user.username}</Text>
                     </TableCell>

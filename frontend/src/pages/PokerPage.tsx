@@ -22,12 +22,12 @@ const client = new Client({
 
 const topicCommand = "/topic/go_stomp_command"
 const topicBroadcast = "/topic/go_stomp_broadcast"
-const pokerCards = ["1", "2", "3", "5", "8", "13", "20", "40", "100", "?", "coffee"]
+const pokerCards = ["1", "2", "3", "5", "8", "13", "20", "40", "100", "what", "break"]
 let userUuid = uuid()
 
 export const PokerPage = () => {
     const sessionConfig = {
-        loginLayerVisible: true,
+        loginLayerVisible: false,
         loginDisabled: true,
         logoutDisabled: true,
         revealDisabled: true,
@@ -74,7 +74,13 @@ export const PokerPage = () => {
 
     const handleBroadcast = (broadcast: GoBroadcast) => {
         if (broadcast.type === "VOTINGS_REVEALED") {
-            setSessionState({...sessionState, forceReveal: true, revealDisabled: true, votingDisabled: true})
+            setSessionState({
+                ...sessionState,
+                forceReveal: true,
+                revealDisabled: true,
+                votingDisabled: true,
+                resetVotingsDisabled: false,
+            })
         }
         if (broadcast.type === "UPDATE_USERS") {
             setSessionState({...sessionState, votingDisabled: false, forceReveal: false})
@@ -121,6 +127,7 @@ export const PokerPage = () => {
         const lastUsername = sessionStorage.getItem("username")
         const lastUserUuid = sessionStorage.getItem("userUuid")
         const lastRole = sessionStorage.getItem("role")
+
         if (lastSession === sessionId && lastUsername !== null && lastUserUuid !== null && lastRole !== null) {
             setUsername(lastUsername)
             setMessage(`Hi ${lastUsername}`)
@@ -138,6 +145,8 @@ export const PokerPage = () => {
             role.current === "player"
                 ? setSessionState({...sessionState, votingDisabled: false})
                 : setSessionState({...sessionState, votingDisabled: true})
+        } else {
+            setSessionState({...sessionState, loginLayerVisible: true})
         }
     }
 
