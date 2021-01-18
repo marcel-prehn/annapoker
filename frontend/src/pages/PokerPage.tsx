@@ -146,7 +146,7 @@ export const PokerPage = () => {
                 ? setSessionState({...sessionState, votingDisabled: false})
                 : setSessionState({...sessionState, votingDisabled: true})
         } else {
-            setSessionState({...sessionState, loginLayerVisible: true})
+            setSessionState({...sessionState, loginLayerVisible: true, logoutDisabled: true})
         }
     }
 

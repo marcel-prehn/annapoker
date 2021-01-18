@@ -27,10 +27,10 @@ export const NavHeader = (props: NavHeaderProps) => {
     } = props
     return (
         <Header background={"brand"} justify={"start"}>
-            <Heading margin={"small"}>Annapoker</Heading>
-            <Link to={"/new"}><Button icon={<AddCircle/>} hoverIndicator/></Link>
-            <Button icon={<Login/>} disabled={loginDisabled} onClick={loginHandler} hoverIndicator/>
-            <Button icon={<Logout/>} disabled={!loginDisabled} onClick={logoutHandler}
+            <Heading margin={"small"} color={"white"}>Annapoker</Heading>
+            <Link to={"/new"}><Button className={"navheader-button"} icon={<AddCircle/>} hoverIndicator/></Link>
+            <Button color={"white"} icon={<Login/>} disabled={loginDisabled} onClick={loginHandler} hoverIndicator/>
+            <Button color={"white"} icon={<Logout/>} disabled={!loginDisabled} onClick={logoutHandler}
                     hoverIndicator/>
             <Box direction={"row"} align={"center"}>
                 <span>|</span>

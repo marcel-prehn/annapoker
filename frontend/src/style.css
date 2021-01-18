@@ -81,47 +81,47 @@ a:link, a:hover, a:active, a:visited {
 }
 
 .card-1 {
-    background-color: aquamarine;
+    background-color: #EDDCD2;
 }
 
 .card-2 {
-    background-color: plum;
+    background-color: #FFF1E6;
 }
 
 .card-3 {
-    background-color: palevioletred;
+    background-color: #FDE2E4;
 }
 
 .card-5 {
-    background-color: coral;
+    background-color: #F5A3C1;
 }
 
 .card-8 {
-    background-color: yellow;
+    background-color: #B1D2D1;
 }
 
 .card-13 {
-    background-color: teal;
+    background-color: #DBE7E4;
 }
 
 .card-20 {
-    background-color: darkred;
+    background-color: #F0EFEB;
 }
 
 .card-40 {
-    background-color: slategrey;
+    background-color: #D6E2E9;
 }
 
 .card-100 {
-    background-color: lightblue;
+    background-color: #BCD4E6;
 }
 
 .card-what {
-    background-color: #9de7d7;
+    background-color: #84B4D7;
 }
 
 .card-break {
-    background-color: #5a9dd0;
+    background-color: #5698C8;
 }
 
 .coffee {

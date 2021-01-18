@@ -1,7 +1,7 @@
 export const annapokerTheme = {
   global: {
     font: {
-      family: "Roboto"
+      family: "Roboto",
     },
     colors: {
       brand: "#ff3562"
