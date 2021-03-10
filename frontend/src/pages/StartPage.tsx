@@ -15,10 +15,10 @@ export const StartPage = () => {
                     <Heading>Welcome to Annapoker!</Heading>
                     <Box direction={"row"} align={"center"}>
                         <Text margin={"medium"} size={"xxlarge"} className={"intro"}>
-                            Click <Button primary
+                            Click <Link to={"/new"}><Button primary
                                           size={"small"}
                                           icon={<AddCircle/>}
-                                          margin={"xxsmall"}/> to generate a new Annapoker session.<br/>
+                                          margin={"xxsmall"}/></Link> to generate a new Annapoker session.<br/>
                             After that, open the new session and share the link.<br/><br/>
                             Following actions are possible during your Annapoker session<br/>
                             <ul className="actions-list">

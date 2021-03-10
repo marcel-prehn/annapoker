@@ -38,6 +38,7 @@ export const NewSessionPage = () => {
     console.log("send command NEW_SESSION with sessionId", sessionId)
     setLink(`/poker/${sessionId}`)
     setButtonVisible(false)
+    window.location.href=link
   }
 
   return (
@@ -57,8 +58,6 @@ export const NewSessionPage = () => {
                 onClick={newSession}
                 margin={"large"}
                 disabled={buttonDisabled}/>
-        <Button disabled={buttonVisible} size={"medium"} className={"newsession-button"} icon={<Share/>}
-                label={"Open Session"} onClick={() => {window.location.href=link}}/>
       </Box>
     </Box>
   )
