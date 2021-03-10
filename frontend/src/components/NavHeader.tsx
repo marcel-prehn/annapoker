@@ -27,7 +27,7 @@ export const NavHeader = (props: NavHeaderProps) => {
     } = props
     return (
         <Header background={"brand"} justify={"start"}>
-            <Heading margin={"small"} color={"white"}>Annapoker</Heading>
+            <Link to={"/"}><Heading margin={"small"} color={"white"}>Annapoker</Heading></Link>
             <Link to={"/new"}><Button className={"navheader-button"} icon={<AddCircle/>} hoverIndicator/></Link>
             <Button color={"white"} icon={<Login/>} disabled={loginDisabled} onClick={loginHandler} hoverIndicator/>
             <Button color={"white"} icon={<Logout/>} disabled={!loginDisabled} onClick={logoutHandler}
