@@ -5,26 +5,25 @@ import {NavHeader} from "../components/NavHeader";
 export const ImpressumPage = () => {
   return (
     <Box>
-      <NavHeader loginDisabled={true} revealDisabled={true} resetVotingsDisabled={true} resetUsersDisabled={true}/>
+      <NavHeader loginDisabled={true} logoutDisabled={true} revealDisabled={true} resetVotingsDisabled={true}
+                 resetUsersDisabled={true}/>
       <Main margin={"medium"}>
         <h1>Impressum</h1>
         <p>Angaben gemäß § 5 TMG</p>
         <p>
           <strong>Inhalte und Idee</strong><br/>
           Annabelle Kern<br/>
-          Claudiusstraße 24a<br/>
-          22041 Hamburg<br/>
+          Zum Zörr 4<br/>
+          41462 Hamburg<br/>
         </p>
         <p>
           <strong>Technische Verantwortung</strong><br/>
           Marcel Prehn<br/>
-          Claudiusstraße 24a<br/>
-          22041 Hamburg<br/>
+          mail@ marcel-prehn. de
         </p>
         <p>
           <strong>Kontakt:</strong><br/>
           annabelle.kern@ gmail. com<br/>
-          mail@ marcel-prehn. de
         </p>
         <p>
           <strong>Haftungsausschluss:</strong><br/><br/>

@@ -44,6 +44,7 @@ export const NewSessionPage = () => {
     <Box>
       <NavHeader
         loginDisabled={true}
+        logoutDisabled={false}
         resetVotingsDisabled={true}
         revealDisabled={true}
         resetUsersDisabled={true}/>

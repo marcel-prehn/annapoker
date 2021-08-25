@@ -19,6 +19,7 @@
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",
+    "reactjs-localstorage": "^1.0.1",
     "sockjs": "^0.3.21",
     "sockjs-client": "^1.5.0",
     "styled-components": "^5.1.1",
